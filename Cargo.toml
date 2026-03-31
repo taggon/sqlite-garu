@@ -1,0 +1,24 @@
+[package]
+name = "sqlite-garu"
+version = "0.1.0"
+edition = "2021"
+description = "SQLite FTS5 Korean tokenizer extension using garu morphological analyzer"
+
+[features]
+loadable = ["rusqlite/loadable_extension"]
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "sqlite_garu"
+
+[dependencies]
+garu-core = { path = "_ref/garu/crates/garu-core" }
+rusqlite = { version = "0.38", features = ["bundled"] }
+
+[dev-dependencies]
+garu-core = { path = "_ref/garu/crates/garu-core" }
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
