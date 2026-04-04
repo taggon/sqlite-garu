@@ -35,7 +35,7 @@ use std::sync::OnceLock;
 
 use garu_core::model::Analyzer;
 use garu_core::types::Pos;
-use rusqlite::ffi::{sqlite3, sqlite3_stmt, SQLITE_OK};
+use rusqlite::ffi::{self, sqlite3, sqlite3_stmt, SQLITE_OK};
 
 pub fn is_stop_pos(pos: Pos) -> bool {
     matches!(
@@ -69,25 +69,6 @@ pub fn is_stop_pos(pos: Pos) -> bool {
             | Pos::XSN
             | Pos::XSV
     )
-}
-
-unsafe extern "C" {
-    fn sqlite3_prepare_v2(
-        db: *mut sqlite3,
-        z_sql: *const c_char,
-        n_byte: c_int,
-        pp_stmt: *mut *mut sqlite3_stmt,
-        pz_tail: *mut *const c_char,
-    ) -> c_int;
-    fn sqlite3_bind_pointer(
-        stmt: *mut sqlite3_stmt,
-        idx: c_int,
-        ptr: *mut c_void,
-        type_tag: *const c_char,
-        destructor: Option<unsafe extern "C" fn(*mut c_void)>,
-    ) -> c_int;
-    fn sqlite3_step(stmt: *mut sqlite3_stmt) -> c_int;
-    fn sqlite3_finalize(stmt: *mut sqlite3_stmt) -> c_int;
 }
 
 // ---------------------------------------------------------------------------
@@ -195,12 +176,12 @@ unsafe fn get_fts5_api(db: *mut sqlite3) -> Option<*mut Fts5Api> {
     let sql = CString::new("SELECT fts5(?1)").ok()?;
     let label = CString::new("fts5_api_ptr").ok()?;
 
-    let rc = sqlite3_prepare_v2(db, sql.as_ptr(), -1, &mut stmt, ptr::null_mut());
+    let rc = ffi::sqlite3_prepare_v2(db, sql.as_ptr(), -1, &mut stmt, ptr::null_mut());
     if rc != SQLITE_OK as c_int {
         return None;
     }
 
-    let rc = sqlite3_bind_pointer(
+    let rc = ffi::sqlite3_bind_pointer(
         stmt,
         1,
         &mut api_ptr as *mut _ as *mut c_void,
@@ -208,12 +189,12 @@ unsafe fn get_fts5_api(db: *mut sqlite3) -> Option<*mut Fts5Api> {
         None,
     );
     if rc != SQLITE_OK as c_int {
-        sqlite3_finalize(stmt);
+        ffi::sqlite3_finalize(stmt);
         return None;
     }
 
-    sqlite3_step(stmt);
-    sqlite3_finalize(stmt);
+    ffi::sqlite3_step(stmt);
+    ffi::sqlite3_finalize(stmt);
 
     if api_ptr.is_null() {
         None
