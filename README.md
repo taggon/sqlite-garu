@@ -5,7 +5,7 @@
 
 [English](docs/README.en.md)
 
-SQLite FTS5 용 한국어 형태소 분석 토크나이저 확장 기능. [garu](https://github.com/ongjin/garu) 형태소 분석기를 사용합니다.
+SQLite FTS5 용 한국어 형태소 분석 토크나이저 확장 기능입니다. 이 프로젝트는 [Garu 프로젝트](https://github.com/ongjin/garu)를 기반으로 하며, Garu의 `garu-core`와 base 모델을 사용합니다.
 
 ## 특징
 

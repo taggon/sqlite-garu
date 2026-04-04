@@ -95,12 +95,13 @@ unsafe extern "C" {
 // ---------------------------------------------------------------------------
 
 const BASE_GMDL: &[u8] = include_bytes!("../_ref/garu/js/models/base.gmdl");
+const CNN2_BIN: &[u8] = include_bytes!("../_ref/garu/js/models/cnn2.bin");
 
 static ANALYZER: OnceLock<Analyzer> = OnceLock::new();
 
 fn get_analyzer() -> &'static Analyzer {
     ANALYZER.get_or_init(|| {
-        Analyzer::from_bytes(BASE_GMDL).expect("Failed to load embedded garu model")
+        Analyzer::from_bytes(BASE_GMDL, CNN2_BIN).expect("Failed to load embedded garu model")
     })
 }
 

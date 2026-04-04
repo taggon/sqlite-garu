@@ -2,7 +2,7 @@
 
 [한국어](../README.md)
 
-A Korean morphological tokenizer extension for SQLite FTS5, powered by [garu](https://github.com/ongjin/garu).
+A Korean morphological tokenizer extension for SQLite FTS5. This project is based on the [Garu project](https://github.com/ongjin/garu) and uses Garu's `garu-core` and embedded base model.
 
 ## Features
 

@@ -1,9 +1,10 @@
 use garu_core::model::Analyzer;
 
 const MODEL: &[u8] = include_bytes!("../_ref/garu/js/models/base.gmdl");
+const CNN2: &[u8] = include_bytes!("../_ref/garu/js/models/cnn2.bin");
 
 fn analyzer() -> Analyzer {
-    Analyzer::from_bytes(MODEL).expect("Failed to load embedded garu model")
+    Analyzer::from_bytes(MODEL, CNN2).expect("Failed to load embedded garu model")
 }
 
 fn filtered_tokens(text: &str) -> Vec<String> {
@@ -24,7 +25,7 @@ fn stop_tags_remove_functional_morphemes() {
         ("빠르게 달리고 있다", &["빠르", "달리", "있"]),
         ("우리는 내일 달릴 것이다", &["우리", "달리", "것", "이"]),
         ("사과가 많이 떨어졌다", &["사과", "떨어지"]),
-        ("배가 아파서 뛰지 못했다", &["배", "아프", "뛰", "하"]),
+        ("배가 아파서 뛰지 못했다", &["배", "아프", "뛰"]),
     ];
     for (input, expected) in cases {
         assert_eq!(filtered_tokens(input), *expected, "filter '{input}'");
@@ -82,7 +83,7 @@ fn foreign_words_and_numbers_are_preserved() {
     );
     assert_eq!(
         filtered_tokens("version 3.51.3 released in 2024"),
-        vec!["version", "3", "51", "3", "released", "in", "2024"]
+        vec!["version", "3.51.3", "released", "in", "2024"]
     );
 }
 

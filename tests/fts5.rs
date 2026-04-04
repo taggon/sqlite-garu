@@ -116,12 +116,16 @@ fn numeric_search() {
     );
     assert_eq!(year_results, vec!["version 3.51.3 released in 2024"]);
 
-    let component_results = rows(
+    // garu >= 0.6.x treats decimal numbers like 3.51.3 as a single SN token
+    let full_version_results = rows(
         &conn,
         "SELECT content FROM version_docs WHERE version_docs MATCH ?",
-        &["51"],
+        &["\"3.51.3\""],
     );
-    assert_eq!(component_results, vec!["version 3.51.3 released in 2024"]);
+    assert_eq!(
+        full_version_results,
+        vec!["version 3.51.3 released in 2024"]
+    );
 }
 
 #[test]
