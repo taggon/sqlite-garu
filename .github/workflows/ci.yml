@@ -63,9 +63,6 @@ jobs:
           - target: aarch64-unknown-linux-gnu
             runner: ubuntu-latest
             artifact: libsqlite_garu.so
-          - target: x86_64-apple-darwin
-            runner: macos-13
-            artifact: libsqlite_garu.dylib
           - target: aarch64-apple-darwin
             runner: macos-latest
             artifact: libsqlite_garu.dylib
@@ -86,6 +83,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-aarch64-linux-gnu
+
+      - name: Setup MSVC Developer Command Prompt
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
 
       - name: Cache cargo
         uses: actions/cache@v4
